@@ -10,6 +10,9 @@ import numpy as np #For arrays
 import sys
 import json
 import re
+import os
+import time
+import random
 
 # Function to collect data from eol
 def eol(name):
@@ -71,7 +74,7 @@ def eol(name):
 
 	df = df[df["Ignore_source"] != 1]
 	if df.shape[0]==0:
-		print ("No data found.")
+		print ("No eol data found.")
 		return None
 
 	df_datafields = df["pred.name"].unique().tolist()
@@ -100,9 +103,10 @@ def eol(name):
 	if "body mass" in df_datafields:
 		if df.loc[(df["pred.name"] == "body mass") &
 					(df["lifestage.name"].isnull()) &
-					(df["stats.name"] == "max"),:].shape[0] > 0:
-			output["life_history_traits"]["bodymass"]["adult_bodymass"]["value"] = df.loc[(df["pred.name"] == "body mass") & (df["lifestage.name"].isnull()) & (df["stats.name"] == "max"), "t.normal_measurement"].values[0]
-			output["life_history_traits"]["bodymass"]["adult_bodymass"]["unit"] = df.loc[(df["pred.name"] == "body mass") & (df["lifestage.name"].isnull()) & (df["stats.name"] == "max"), "normal_units.name"].values[0]
+					(df["stats.name"] == "average"),:].shape[0] > 0:
+					# Could be improved to obtain info from various sources...
+			output["life_history_traits"]["bodymass"]["adult_bodymass"]["value"] = df.loc[(df["pred.name"] == "body mass") & (df["lifestage.name"].isnull()) & (df["stats.name"] == "average"), "t.normal_measurement"].values[0]
+			output["life_history_traits"]["bodymass"]["adult_bodymass"]["unit"] = df.loc[(df["pred.name"] == "body mass") & (df["lifestage.name"].isnull()) & (df["stats.name"] == "average"), "normal_units.name"].values[0]
 
 	return output
 
@@ -150,6 +154,8 @@ def iucn(name):
 		# else:
 		# 	data["taxonomy"]["synonyms"]["value"] = "NA"
 
+	time.sleep(random.randint(5,10))
+
 	###Individual species by name request
 	response = requests.get("http://apiv3.iucnredlist.org/api/v3/species/" + name,
 							params = {"token" : tok})
@@ -180,6 +186,8 @@ def iucn(name):
 			# 	data["habitat"]["extent_of_occurrence"]["value"] = "NA"
 			# 	data["habitat"]["extent_of_occurrence"]["unit"] = "NA"
 
+	time.sleep(random.randint(5,10))
+	
 	### Country occurrence by species name
 	response = requests.get("http://apiv3.iucnredlist.org/api/v3/species/countries/name/"+name,
 							params = {"token" : tok})
@@ -199,7 +207,8 @@ def iucn(name):
 		# 	data["habitat"]["countries_of_occurrence"]["value"] = "NA"
 		# 	data["habitat"]["countries_of_occurrence"]["unit"] = "NA"
 
-
+	time.sleep(random.randint(5,10))
+	
 	### Red List assessments by species name
 	response = requests.get("http://apiv3.iucnredlist.org/api/v3/species/history/name/"+name,
 							params = {"token" : tok})
@@ -222,6 +231,7 @@ def iucn(name):
 			# else:
 			# 	data["iucn_status"]["historical_categories"]["value"] = "NA"
 
+	time.sleep(random.randint(5,10))
 
 	### Threats by species name
 	response = requests.get("http://apiv3.iucnredlist.org/api/v3/threats/species/name/"+name,
@@ -244,6 +254,7 @@ def iucn(name):
 			data["threats"]["severity"]["value"] = severity
 			data["threats"]["score"]["value"] = score
 
+	time.sleep(random.randint(5,10))
 
 	###Habitats by species name
 	response = requests.get("http://apiv3.iucnredlist.org/api/v3/habitats/species/name/"+name,
@@ -258,6 +269,7 @@ def iucn(name):
 	#Specificity
 	# specificity = len(list(set(habitattype)))/13
 	# print("Habitat specificity: " + str(specificity))
+	time.sleep(random.randint(5,10))
 
 	### Conservation measures by species name
 	response = requests.get("http://apiv3.iucnredlist.org/api/v3/measures/species/name/"+name,
@@ -269,6 +281,7 @@ def iucn(name):
 			measures = [res["result"][i]["title"] for i in range(len(res["result"]))]
 			data["conservation"]["management_practices"]["value"] = measures
 
+	time.sleep(random.randint(5,10))
 
 	###Narrative text by species name
 	response = requests.get("http://apiv3.iucnredlist.org/api/v3/species/narrative/"+name,
@@ -344,7 +357,7 @@ def iucn(name):
 													narrative_dict = res)
 				data["trade"]["use_trade_notes"]["value"] = tradenote
 	if dat_count == 0:
-		print ("No data found.")
+		print ("No iucn data found.")
 		return None
 
 	return data
@@ -364,7 +377,7 @@ def	anage(name):
 	sp_row = anage_df[list(anage_df['binomial'] == name)]
 
 	if sp_row.empty:
-		print("No data bro")
+		print("No anage data bro")
 		return None
 
 	# Get specific info
@@ -425,3 +438,54 @@ def	anage(name):
 	output["life_history_traits"]["bodymass"]["adult_bodymass"]["unit"] = "Kg"
 
 	return output
+
+
+## Testing code...
+# Specified parrot species
+# parrot_species = ["Anodorhynchus leari", "Probosciger aterrimus", 
+# 					"Eunymphicus cornutus", "Prosopeia personata", 
+# 					"Tanygnathus lucionensis"]
+
+
+## Main code ....
+# Load parrot species 
+sp_df = pd.read_csv("../Data/SpeciesList.csv")
+
+parrot_species = set(sp_df["Binomial"])
+# os.mkdir("../Data/parrot_data")
+
+# 
+for parrot in parrot_species:
+	# time.sleep(10)
+	print (parrot)
+	dat_found = 0
+	sp_dat = {"iucn" : {},
+			"anage" : {},
+			"eol" : {}}
+	
+	eol_dat = eol(parrot)
+	if eol_dat != None:
+		sp_dat["eol"] = eol_dat
+		dat_found += 1
+
+	anage_dat = anage(parrot)
+	if anage_dat != None:
+		sp_dat["anage"] = anage_dat
+		dat_found += 1
+	
+	iucn_dat = iucn(parrot)
+	if iucn_dat != None:
+		sp_dat["iucn"] = iucn_dat
+		dat_found += 1
+
+	if dat_found > 0:
+		print ("Saving data ...")
+		with open("../Data/parrot_data"+"_".join(parrot.split(" "))+".json", 'w') as json_f:
+  			json.dump(sp_dat, json_f)
+	# print("\n")
+	# print (sp_dat)
+
+	
+
+
+
