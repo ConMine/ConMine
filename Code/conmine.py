@@ -480,12 +480,21 @@ for parrot in parrot_species:
 
 	if dat_found > 0:
 		print ("Saving data ...")
-		with open("../Data/parrot_data"+"_".join(parrot.split(" "))+".json", 'w') as json_f:
+		with open("../Data/parrot_data/"+"_".join(parrot.split(" "))+".json", 'w') as json_f:
   			json.dump(sp_dat, json_f)
 	# print("\n")
 	# print (sp_dat)
 
 	
+parrot_list = os.listdir("../Data/parrot_data")
 
+par = [p.split(".json")[0] for p in parrot_list]
 
+par = [" ".join(p.split("_")) for p in par]
 
+# Sp with no data
+parrot_species.difference(set(par))
+# {'Charmosyna aureicincta',
+#  'Pionopsitta aurantiocephala',
+#  'Pionopsitta pyrilia',
+#  'Psittacula intermedia'}
