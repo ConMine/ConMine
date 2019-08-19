@@ -5,7 +5,7 @@ import os
 import json
 from gensim.utils import simple_preprocess
 from gensim.summarization.textcleaner import split_sentences
-# from functools import reduce
+from functools import reduce
 from fuzzywuzzy import fuzz
 
 ## Functions
@@ -13,6 +13,18 @@ from fuzzywuzzy import fuzz
 def find_country(text, country):
 	'''Function to id country names in iucn notes and insert mark tags for 
 	highlighting in html'''
+
+	# # Split text into individual words
+	# word_ls = text.split(" ")
+
+	# for t in range(len(word_ls)):
+	# 	# Match word against country
+	# 	pr = fuzz.token_set_ratio(word_ls[t], country)
+	# 	# If match is good, add html marks...	
+	# 	if pr>90:
+	# 		# print (word_ls[t])
+	# 		word_ls[t] = "<mark>"+word_ls[t]+"</mark>"
+
 	# Split text into sentences within paragraphs
 	split_txt = [split_sentences(para) for para in text.split("\n") if len(split_sentences(para))>0]
 	# interest_idx = [[0] * len(inner) for inner in split_txt]
@@ -25,9 +37,10 @@ def find_country(text, country):
 			if pr>90:
 				# interest_idx[p][s] += 1
 				# Add "<mark>" to start and end of sentence?
-				split_txt[p][s] = "<mark>"+split_txt[p][s]+"<mark>"
+				split_txt[p][s] = "<mark>"+split_txt[p][s]+"</mark>"
 
-	recomb_html = "<br/>".join([" ".join(inner) for inner in split_txt])
+	recomb_html = "\n".join([" ".join(inner) for inner in split_txt])
+	# recomb_html = " ".join(word_ls)
 	return(recomb_html)
 
 # Extracts data from dictionary level given a list of indices to that level
