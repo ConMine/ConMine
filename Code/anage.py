@@ -30,7 +30,7 @@ with open("../Data/template.json") as json_file:
 #################
 
 #read in df
-anage_df = pd.read_csv('Data/anage_data.txt', sep='\t')
+anage_df = pd.read_csv('../Data/anage_data.txt', sep='\t')
 #combine to get binomial column
 anage_df['binomial'] = (anage_df['Genus'] + ' ' + anage_df['Species'])
 #extract species row
