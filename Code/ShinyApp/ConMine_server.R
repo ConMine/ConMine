@@ -1,5 +1,7 @@
 server <- function(input, output) {
   
+  output$logo <- renderImage({list(src = "../images/Logo.png")})
+  
   #####
   #SPECIES INFORMATION
   #####
@@ -93,8 +95,16 @@ server <- function(input, output) {
   output$habitat <- renderTable({
     df <- other_data %>%
       filter(Species == gsub(" ","_",input$Species_Choice),Database == "iucn") %>%
-      select(contains("habitats"))
+      select(contains("habitats.")) %>%
+      gather("key","Value") %>%
+      filter(key != "habitats.season") %>%
+      separate(col = key,into = c(NA,"Information"),sep = "\\.")
       
+      
+    if(nrow(df) > 0){
+      return(df)
+    }
+    
   })
   
   #picture

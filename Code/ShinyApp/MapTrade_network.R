@@ -74,7 +74,7 @@ tradeflow <- function(species,year){
     edge.ind <- newsumtrade[i,]$logweight+1
     
     arrows(node1[1,]$Lat, node1[1,]$Long, node2[1,]$Lat, node2[1,]$Long,
-           lwd=edge.ind, angle=30, code=3, col = edge.col[edge.ind])
+           lwd=edge.ind, angle=30, col = edge.col[edge.ind])
   }
   
   ##Adding legend

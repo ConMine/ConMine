@@ -26,7 +26,7 @@ tabPanel("Species Information",
                   h3("Range Notes"), htmlOutput("range_notes"),br(),br(),
                   h3("Range Trend"), htmlOutput("range_trend"),br()),
                   column(4,htmlOutput("picture"),br(),
-                  tableOutput("redlist")
+                  h3("Habitat Notes"),tableOutput("habitat")
                   )
                   )
          ),
@@ -34,7 +34,7 @@ tabPanel("Species Information",
 #Trait Tab 
 tabPanel("Traits",
  tabsetPanel(type = "tabs",
-  tabPanel("Imputed Data",
+  tabPanel("Trait Data",
    selectInput(inputId = "imputed_trait",
     label = "Choose a imputed trait:",
      choices = c("Life span","Body size")),
@@ -42,7 +42,8 @@ tabPanel("Traits",
 
 #Threats and Consservation
 tabPanel("Threats and Conservation",
-         h3("Red List Notes"),   htmlOutput("redlist_notes"),br(),
+         fluidRow(column(6,h3("Red List Notes"),   htmlOutput("redlist_notes")),
+                  column(6,h3("Red List"),tableOutput("redlist"))),
          h3("Population Notes"), htmlOutput("population_notes"),br(),
          h3("Population Trend"), htmlOutput("population_trend"),br(),
          h3("Conservation Notes"), htmlOutput("conservation_notes") 
