@@ -8,6 +8,7 @@ from gensim.summarization.textcleaner import split_sentences
 from functools import reduce
 from fuzzywuzzy import fuzz
 
+
 ## Functions
 ## Returns marked html from iucn notes
 def find_country(text, country):
@@ -15,8 +16,30 @@ def find_country(text, country):
 	highlighting in html'''
 
 	# # Split text into individual words
-	# word_ls = text.split(" ")
+	txt_ls = text.split(" ")
+	q_ls = country.split(" ")
 
+	# given length of country 
+	q_len = len(q_ls)
+
+	interest = [0]*len(txt_ls)
+
+	# check each subset of n words for matches
+	for i in range(len(txt_ls)-q_len+1):
+		tmp_txt = (" ").join(txt_ls[i:i+q_len])
+
+		if fuzz.token_set_ratio(tmp_txt, country)>=90:
+			interest[i:i+q_len] = [1]*q_len
+
+	# use index list to find words to highlight
+	for w in range(len(txt_ls)):
+		if interest[w] == 1:
+			txt_ls[w] = "<mark>"+txt_ls[w]+"</mark>"
+
+	recomb_html = " ".join(txt_ls)
+	# If consecutive words highlighted, rm end and start
+	recomb_html = recomb_html.replace("</mark> <mark>", " ")
+	
 	# for t in range(len(word_ls)):
 	# 	# Match word against country
 	# 	pr = fuzz.token_set_ratio(word_ls[t], country)
@@ -24,22 +47,22 @@ def find_country(text, country):
 	# 	if pr>90:
 	# 		# print (word_ls[t])
 	# 		word_ls[t] = "<mark>"+word_ls[t]+"</mark>"
-
+	
 	# Split text into sentences within paragraphs
-	split_txt = [split_sentences(para) for para in text.split("\n") if len(split_sentences(para))>0]
-	# interest_idx = [[0] * len(inner) for inner in split_txt]
+	# split_txt = [split_sentences(para) for para in text.split("\n") if len(split_sentences(para))>0]
+	# # interest_idx = [[0] * len(inner) for inner in split_txt]
 
-	for p in range(len(split_txt)):
-		for s in range(len(split_txt[p])):
-			# for each sentence fuzzy match against country
-			pr = fuzz.token_set_ratio(split_txt[p][s], country)
-			# If match is good, indicate in interest list or add marks...
-			if pr>90:
-				# interest_idx[p][s] += 1
-				# Add "<mark>" to start and end of sentence?
-				split_txt[p][s] = "<mark>"+split_txt[p][s]+"</mark>"
+	# for p in range(len(split_txt)):
+	# 	for s in range(len(split_txt[p])):
+	# 		# for each sentence fuzzy match against country
+	# 		pr = fuzz.token_set_ratio(split_txt[p][s], country)
+	# 		# If match is good, indicate in interest list or add marks...
+	# 		if pr>90:
+	# 			# interest_idx[p][s] += 1
+	# 			# Add "<mark>" to start and "</mark>" end of sentence?
+	# 			split_txt[p][s] = "<mark>"+split_txt[p][s]+"</mark>"
 
-	recomb_html = "\n".join([" ".join(inner) for inner in split_txt])
+	# recomb_html = "\n".join([" ".join(inner) for inner in split_txt])
 	# recomb_html = " ".join(word_ls)
 	return(recomb_html)
 
@@ -112,6 +135,7 @@ for f in f_ls:
 
 # print(row_count)
 out_df = out_df.loc[0:row_count-1]
+# out_df.to_csv("../../Local_Code/Data/marked_text.csv")
 
 idx = int((row_count-1)/3.0)
 
