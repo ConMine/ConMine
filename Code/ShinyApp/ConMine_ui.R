@@ -23,7 +23,8 @@ tabPanel("Species Information",
                   h1(textOutput("species_name")),
                   h4(textOutput("synonym")),br(),br(),
                   h3("Taxanomic Notes"), htmlOutput("taxa_notes"),br(),br(),
-                  h3("Range Notes"), htmlOutput("range_notes"),br(),br()),
+                  h3("Range Notes"), htmlOutput("range_notes"),br(),br(),
+                  h3("Range Trend"), htmlOutput("range_trend"),br()),
                   column(4,htmlOutput("picture"),br(),
                   tableOutput("redlist")
                   )
@@ -33,7 +34,6 @@ tabPanel("Species Information",
 #Trait Tab 
 tabPanel("Traits",
  tabsetPanel(type = "tabs",
-  tabPanel("Real Data"),
   tabPanel("Imputed Data",
    selectInput(inputId = "imputed_trait",
     label = "Choose a imputed trait:",
@@ -42,19 +42,20 @@ tabPanel("Traits",
 
 #Threats and Consservation
 tabPanel("Threats and Conservation",
-         h3("Red List Notes"), htmlOutput("redlist_notes"),br(),br(),
-         h3("Population Notes"), htmlOutput("population_notes"),br(),br(),
+         h3("Red List Notes"),   htmlOutput("redlist_notes"),br(),
+         h3("Population Notes"), htmlOutput("population_notes"),br(),
+         h3("Population Trend"), htmlOutput("population_trend"),br(),
          h3("Conservation Notes"), htmlOutput("conservation_notes") 
          ),
 
 #Trade
 tabPanel("Trade",
          h3("Trade Notes"), htmlOutput("trade_notes"),br(),br(),
-         plotOutput("Trade_Plot"),
-         uiOutput("year_slider"),
-         br(),br(),
-         plotOutput("Trade_timeseries"),
-         plotOutput("Trade_Network")
+         tabsetPanel(type = "tabs",
+                     tabPanel("Worldwide Trade",plotOutput("Trade_Plot")),
+                     tabPanel("Trade Timeseries",plotOutput("Trade_timeseries")),
+                     tabPanel("Trade Networks",plotOutput("Trade_Network"))),
+         uiOutput("year_slider")
          )
       )                                 
     )             

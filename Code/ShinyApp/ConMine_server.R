@@ -35,6 +35,7 @@ server <- function(input, output) {
 
     cites <- data.frame(matrix(NA,ncol = 2, nrow = nrow(df)/2))
     
+    if(nrow(cites) > 0){
     for(i in 1:(nrow(df)/2)){
       pair <- subset(df,df$N == unique(df$N)[i])
       cites[i,1] <- pair$value[which(!is.na(suppressWarnings(as.numeric(pair$value))))]
@@ -42,8 +43,11 @@ server <- function(input, output) {
     }
     
     colnames(cites) <- c("Year","Red List Category")
-    
     return(cites[order(cites$Year),])
+    
+    } else {
+      return(data.frame("Red List" = "No Red-listing"))
+    }
   })  
   
   #species Notes
@@ -68,6 +72,30 @@ server <- function(input, output) {
       return(df$range_notes[1])
     } 
   })
+
+  output$range_trend <- renderText({
+    df <- other_data %>%
+      filter(Species == gsub(" ","_",input$Species_Choice),Database == "iucn")
+   
+    if(nrow(df) > 0){
+      
+      if(df$range_trend.value != "value" & !is.na(df$range_trend.value) ){
+        return(df$range_trend.value[1])
+      } else {
+        return("No range trend information")
+      }
+      
+    } else {
+      return("No range trend information")
+    }
+  })
+  
+  output$habitat <- renderTable({
+    df <- other_data %>%
+      filter(Species == gsub(" ","_",input$Species_Choice),Database == "iucn") %>%
+      select(contains("habitats"))
+      
+  })
   
   #picture
   output$picture<-renderText({
@@ -81,6 +109,12 @@ server <- function(input, output) {
   
   
   ##LIFE HISTORY TRAITS
+  output$trait_data <- renderTable({
+    df <- Real_data %>%
+      filter(Species == gsub(" ","_",input$Species_Choice),Database == "iucn")
+      
+  })
+  
   #Imputed data plotting
   output$Imputed_Plot <- renderPlot({
     plot_imputation(gsub(" ","_",input$Species_Choice),
@@ -107,12 +141,15 @@ server <- function(input, output) {
     df <- marked_text %>%
       filter(SpeciesID == gsub(" ","_",input$Species_Choice),
              Country == input$Country_Choice)
-    
+    if(nrow(df) > 0){
     if(is.na(df$population_notes[1])){
       return("No population notes avalible")  
     }else{
       return(df$population_notes[1])
     } 
+    } else {
+      return("No population notes avalible")  
+    }
   })
   
   output$conservation_notes <- renderText({
@@ -127,6 +164,22 @@ server <- function(input, output) {
     } 
   })
   
+  output$population_trend <- renderText({
+    df <- other_data %>%
+      filter(Species == gsub(" ","_",input$Species_Choice),Database == "iucn") %>%
+      select(population_trend.value)
+    
+    if(nrow(df) > 0){
+    if(!is.na(df$population_trend.value)){
+      return("No population trend notes avalible")  
+    }else{
+      return(df$population_trend.value)
+    } 
+    }else{
+      return("No population trend notes avalible")  
+    }
+    
+  })
   
 
   #Trade
