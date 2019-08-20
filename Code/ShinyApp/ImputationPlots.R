@@ -1,4 +1,3 @@
-
 Imputed_data <- read.csv("../Data/imputation/ImputedData.csv")
 Imputed_report <- read.csv("../Data/imputation/ImputationReport.csv")
 
@@ -81,3 +80,5 @@ Real_data_values <- Real_data %>% na.omit() %>%
       } 
     }
   }
+
+  

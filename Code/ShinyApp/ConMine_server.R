@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 server <- function(input, output) {
-  
   
   #####
   #SPECIES INFORMATION
@@ -59,6 +57,7 @@ server <- function(input, output) {
       return(df$taxonomic_notes[1])
     } 
   })
+  
   output$range_notes <- renderText({
     df <- marked_text %>%
       filter(SpeciesID == gsub(" ","_",input$Species_Choice),Country == input$Country_Choice)
@@ -171,23 +170,5 @@ server <- function(input, output) {
     } 
   })
   
-  
-  
-  
   }
-=======
-# Define server logic required to draw a histogram ----
-server <- function(input, output) {
-  
-  
-  ##LIFE HISTORY TRAITS
-  
-  #Imputed data plotting
-  output$Imputed_Plot <- renderPlot({plot_imputation(gsub(" ","_",input$Species_Choice),
-                                                Imputed_data,
-                                                Imputed_report,
-                                                input$imputed_trait)})
-    
-  output$test <- renderText({"Hi"})
-}
->>>>>>> b8a18a08c5bde0216505fdc767ff77cbe66fed7b
+
