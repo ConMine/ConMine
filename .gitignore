@@ -194,4 +194,7 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/osx,linux,python,windows
+<<<<<<< HEAD
 Data/parrot_csv/marked_text.csv
+=======
+>>>>>>> b8a18a08c5bde0216505fdc767ff77cbe66fed7b

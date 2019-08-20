@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 server <- function(input, output) {
   
   
@@ -174,3 +175,19 @@ server <- function(input, output) {
   
   
   }
+=======
+# Define server logic required to draw a histogram ----
+server <- function(input, output) {
+  
+  
+  ##LIFE HISTORY TRAITS
+  
+  #Imputed data plotting
+  output$Imputed_Plot <- renderPlot({plot_imputation(gsub(" ","_",input$Species_Choice),
+                                                Imputed_data,
+                                                Imputed_report,
+                                                input$imputed_trait)})
+    
+  output$test <- renderText({"Hi"})
+}
+>>>>>>> b8a18a08c5bde0216505fdc767ff77cbe66fed7b
