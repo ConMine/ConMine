@@ -49,9 +49,6 @@ tradeflow <- function(species,year){
   ##Add points of each country centroid
   points(x=newcentroids$Lat, y=newcentroids$Long, col="orange")
   
-  ##Adding legend
-  # legend("topright", legend="Arrow width = Logarithm of Total Trade + 1")
-  
   ##Colour spectrum
   col.1 <- adjustcolor("orange red", alpha=0.4)
   col.2 <- adjustcolor("orange", alpha=0.4)
@@ -80,6 +77,9 @@ tradeflow <- function(species,year){
            lwd=edge.ind, angle=30, code=3, col = edge.col[edge.ind])
   }
   
+  ##Adding legend
+  legend("bottomleft", legend="Arrow width = Logarithm of Total Trade + 1",
+         bg="black", text.col="orange", text.width=8, col="orange")
   
 }
 
