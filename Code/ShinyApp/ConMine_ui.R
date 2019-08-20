@@ -22,10 +22,13 @@ tabPanel("Welcome",
 #Species Tab  
 tabPanel("Species Information",
          fluidRow(column(6,
-                  h1(textOutput("species_name")),br(),br(),
+                  h1(textOutput("species_name")),
+                  h4(textOutput("synonym")),br(),br(),
                   h3("Taxanomic Notes"), htmlOutput("taxa_notes"),br(),br(),
                   h3("Range Notes"), htmlOutput("range_notes"),br(),br()),
-                  column(4,htmlOutput("picture"))
+                  column(4,htmlOutput("picture"),br(),
+                  tableOutput("redlist")
+                  )
                   )
          ),
 
@@ -52,7 +55,8 @@ tabPanel("Trade",
          plotOutput("Trade_Plot"),
          uiOutput("year_slider"),
          br(),br(),
-         plotOutput("Trade_timeseries")
+         plotOutput("Trade_timeseries"),
+         plotOutput("Trade_Network")
          )
       )                                 
     )             

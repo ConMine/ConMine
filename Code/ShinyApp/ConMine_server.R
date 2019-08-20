@@ -1,8 +1,52 @@
 server <- function(input, output) {
   
-  #Species Name
+  
+  #####
+  #SPECIES INFORMATION
+  #####
+  
+  #Species Name + synonym
   output$species_name <- renderText({input$Species_Choice})
+  output$synonym <- renderText({
+    df <- other_data %>%
+      filter(Species == gsub(" ","_",input$Species_Choice))
+    
+    syn <- df$synonyms.value[-which(df$synonyms.value == "value")]
+    
+    if(!is_empty(syn)){
+      return(paste(syn,sep = "<br>"))
+    }
+    })    
+  
+  #Redlist information
+  output$redlist <- renderTable({
+    #get redlist catagories
+    df <- other_data %>%
+      filter(Species == gsub(" ","_",input$Species_Choice),Database == "iucn")%>%
+      select(contains("historical_categories"),
+             contains("red_list_category"),
+             -historical_categories.value,
+             Database) %>%
+      gather("title","value") %>%
+      separate(title,c("title","N"),"value") %>%
+      filter(!is.na(value), title != "Database") %>%
+      mutate(N = as.numeric(N),
+             N =  N + N %% 2,
+             N = ifelse(grepl("red_list",title), 0 , N ) )
 
+    cites <- data.frame(matrix(NA,ncol = 2, nrow = nrow(df)/2))
+    
+    for(i in 1:(nrow(df)/2)){
+      pair <- subset(df,df$N == unique(df$N)[i])
+      cites[i,1] <- pair$value[which(!is.na(suppressWarnings(as.numeric(pair$value))))]
+      cites[i,2] <- pair$value[which(is.na(suppressWarnings(as.numeric(pair$value))))]
+    }
+    
+    colnames(cites) <- c("Year","Red List Category")
+    
+    return(cites[order(cites$Year),])
+  })  
+  
   #species Notes
   output$taxa_notes <- renderText({
     df <- marked_text %>%
@@ -34,7 +78,6 @@ server <- function(input, output) {
       return("No picture avalible :(")
     }
     })
-  
   
   
   ##LIFE HISTORY TRAITS
@@ -98,6 +141,10 @@ server <- function(input, output) {
     plot_trademap_time(input$Species_Choice)
   })
   
+  output$Trade_Network <- renderPlot({
+    tradeflow(input$Species_Choice,input$year_slider_val)
+  })
+  
   output$year_slider <- renderUI({
     #get the year range to display
     year_range <- get_year_range(input$Species_Choice)
@@ -122,6 +169,8 @@ server <- function(input, output) {
       return(df$use_trate_notes[1])
     } 
   })
+  
+  
   
   
   }

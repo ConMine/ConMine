@@ -3,6 +3,8 @@
 source("ShinyApp/helpers.R")
 source("ShinyApp/ImputationPlots.R")
 source("ShinyApp/MapTrade.R")
+source("ShinyApp/MapTrade_network.R")
+
 source("ShinyApp/DownloadImage.R")
 
 
