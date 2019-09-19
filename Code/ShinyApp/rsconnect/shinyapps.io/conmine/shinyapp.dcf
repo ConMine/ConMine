@@ -1,0 +1,10 @@
+name: shinyapp
+title:
+username:
+account: conmine
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1106129
+bundleId: 2345232
+url: https://conmine.shinyapps.io/shinyapp/
+when: 1566484402.13557

@@ -1,11 +1,9 @@
-#!/usr/bin/env Rscript
-
 ##Installing packages
-if (!require("shiny")) install.packages("shiny")
-if (!require("dplyr")) install.packages("dplyr")
-if (!require("tidyverse")) install.packages("tidyverse")
-if (!require("rworldmap")) install.packages("rworldmap")
-if (!require("maps")) install.packages("maps")
-if (!require("countrycode")) install.packages("countrycode")
-if (!require("WikipediR")) install.packages("WikipediR")
-if (!require("rvest")) install.packages("rvest")
+if (!library("shiny")) install.packages("shiny")
+if (!library("dplyr")) install.packages("dplyr")
+if (!library("tidyverse")) install.packages("tidyverse")
+if (!library("rworldmap")) install.packages("rworldmap")
+if (!library("maps")) install.packages("maps")
+if (!library("countrycode")) install.packages("countrycode")
+if (!library("WikipediR")) install.packages("WikipediR")
+if (!library("rvest")) install.packages("rvest")
