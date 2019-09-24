@@ -5,6 +5,6 @@ account: conmine
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1215829
-bundleId: 2426263
+bundleId: 2440099
 url: https://conmine.shinyapps.io/conmineshinyapp/
-when: 1568886710.66873
+when: 1569320058.99525

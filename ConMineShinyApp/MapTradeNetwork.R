@@ -78,8 +78,8 @@ tradeflow <- function(species,year){
   }
   
   ##Adding legend
-  legend("bottom", legend="Arrow width = Logarithm of Total Trade + 1",
-         bg=NULL, bty="n", text.col="orange", text.width=8, col="orange")
+  # legend("bottom", legend="Arrow width = Logarithm of Total Trade + 1",
+         # bg=NULL, bty="n", text.col="orange", text.width=8, col="orange")
   
 }
 

@@ -102,7 +102,15 @@ server <- function(input, output) {
   output$habitat <- renderTable({
     df <- other_data %>%
       filter(Species == gsub(" ","_",input$Species_Choice),Database == "iucn") %>%
-      select(contains("habitats"))
+      select(contains("habitats.")) %>%
+      gather("key","Value") %>%
+      filter(key != "habitats.season") %>%
+      separate(col = key,into = c(NA,"Information"),sep = "\\.")
+    
+    
+    if(nrow(df) > 0){
+      return(df)
+    }
     
   })
   
@@ -263,7 +271,7 @@ ui <- fluidPage(
                                                                h3("Range Notes"), htmlOutput("range_notes"),br(),br(),
                                                                h3("Range Trend"), htmlOutput("range_trend"),br()),
                                                         column(4,htmlOutput("picture"),br(),
-                                                               tableOutput("redlist")
+                                                               h3("Habitat Notes"), tableOutput("habitat")
                                                         )
                                                )
                                       ),
@@ -271,15 +279,16 @@ ui <- fluidPage(
                                       #Trait Tab 
                                       tabPanel("Traits",
                                                tabsetPanel(type = "tabs",
-                                                           tabPanel("Imputed Data",
+                                                           tabPanel("Trait Data",
                                                                     selectInput(inputId = "imputed_trait",
-                                                                                label = "Choose a imputed trait:",
+                                                                                label = "Choose a trait:",
                                                                                 choices = c("Life span","Body size")),
                                                                     plotOutput("Imputed_Plot")))),
                                       
                                       #Threats and Consservation
                                       tabPanel("Threats and Conservation",
-                                               h3("Red List Notes"),   htmlOutput("redlist_notes"),br(),
+                                               fluidRow(column(6,h3("Red List Notes"),   htmlOutput("redlist_notes")),
+                                                        column(6,h3("Red List"),tableOutput("redlist"))),
                                                h3("Population Notes"), htmlOutput("population_notes"),br(),
                                                h3("Population Trend"), htmlOutput("population_trend"),br(),
                                                h3("Conservation Notes"), htmlOutput("conservation_notes") 
